@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WILD REALM // ADVANCED ECOSYSTEM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Lignes de scan holographiques en arrière-plan */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 99;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        /* Navigation style Foot Locker futuriste */
+        nav {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 1.1rem;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: #fff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+        }
+
+        .nav-links span {
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+        }
+
+        .nav-links span.active-nav, .nav-links span:hover {
+            color: #ff003c;
+        }
+
+        /* Conteneur principal sans scroll-bar visible */
+        main {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+        }
+        main::-webkit-scrollbar { display: none; }
+
+        section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            scroll-snap-align: start;
+            overflow: hidden;
+        }
+
+        /* Les lumières néons rouges verticales en arrière-plan comme dans la vidéo */
+        .neon-grid {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            justify-content: space-around;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        section.active .neon-grid {
+            opacity: 0.15;
+        }
+
+        .neon-line {
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, #ff003c, transparent);
+            box-shadow: 0 0 20px #ff003c, 0 0 40px #ff003c;
+        }
+
+        /* Titre géant en arrière-plan qui glitch */
+        .bg-text {
+            position: absolute;
+            font-size: 14vw;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.015);
+            text-shadow: 0 0 20px rgba(255, 0, 60, 0);
+            z-index: 1;
+            user-select: none;
+            transition: all 0.8s ease;
+        }
+
+        section.active .bg-text {
+            color: rgba(255, 255, 255, 0.03);
+            text-shadow: 0 0 30px rgba(255, 0, 60, 0.2);
+        }
+
+        .showcase {
+            display: flex;
+            width: 80%;
+            max-width: 1200px;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2;
+        }
+
+        /* Conteneur de l'image avec effet d'exposition 3D sombre */
+        .animal-canvas {
+            width: 450px;
+            height: 550px;
+            position: relative;
+            background: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            transform: rotateY(15deg) scale(0.9);
+            opacity: 0.3;
+            filter: blur(10px) brightness(0.3);
+            transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 1s, filter 1s;
+            box-shadow: 0 30px 100px rgba(0,0,0,0.8);
+        }
+
+        section.active .animal-canvas {
+            transform: rotateY(0deg) scale(1);
+            opacity: 1;
+            filter: blur(0px) brightness(0.85);
+            border-color: rgba(255, 0, 60, 0.3);
+            box-shadow: 0 0 50px rgba(255, 0, 60, 0.1);
+        }
+
+        .animal-canvas img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(30%);
+        }
+
+        /* Panneau d'informations techniques (Style Cyberpunk) */
+        .info-panel {
+            width: 45%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .tagline {
+            font-size: 0.8rem;
+            color: #ff003c;
+            letter-spacing: 5px;
+            margin-bottom: 15px;
+            opacity: 0.6;
+        }
+
+        .animal-name {
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        .description {
+            font-size: 0.9rem;
+            line-height: 1.8;
+            color: #888;
+            border-left: 2px solid #222;
+            padding-left: 20px;
+            opacity: 0;
+            transform: translateX(30px);
+            transition: all 0.8s ease 0.2s;
+        }
+
+        section.active .description {
+            opacity: 1;
+            transform: translateX(0);
+            color: #b5b5b5;
+            border-left-color: #ff003c;
+        }
+
+        /* Bouton interactif d'action en bas */
+        .action-btn {
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            width: fit-content;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #ff003c;
+            border-color: #ff003c;
+            box-shadow: 0 0 20px rgba(255, 0, 60, 0.6);
+        }
+
+        /* Indicateur de Scroll */
+        .scroll-hint {
+            position: fixed;
+            bottom: 40px; right: 40px;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">WILD.ARK // SYSTEM</div>
+        <div class="nav-links">
+            <span class="active-nav">SPECIES</span>
+            <span>INDEX</span>
+            <span>CORE</span>
+        </div>
+    </nav>
+
+    <div class="scroll-hint">SCROLL_DOWN_TO_DECRYPT</div>
+
+    <main id="viewport">
+        <!-- ANIMAL 1 -->
+        <section class="active">
+            <div class="neon-grid"><div class="neon-line"></div><div class="neon-line"></div><div class="neon-line"></div></div>
+            <div class="bg-text">LION.01</div>
+            <div class="showcase">
+                <div class="animal-canvas">
+                    <img src="https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=600&q=80" alt="Lion">
+                </div>
+                <div class="info-panel">
+                    <div class="tagline">// APEX_PREDATOR_V1</div>
+                    <h2 class="animal-name" data-scramble>Panthera Leo</h2>
+                    <p class="description">Unité de combat biologique haut de gamme. Doté d'une structure musculaire optimisée pour la pression d'impact et d'un système de communication de meute crypté par infrasons.</p>
+                    <button class="action-btn">INITIALISER L'ANALYSE</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ANIMAL 2 -->
+        <section>
+            <div class="neon-grid"><div class="neon-line"></div><div class="neon-line"></div><div class="neon-line"></div></div>
+            <div class="bg-text">EAGLE.02</div>
+            <div class="showcase">
+                <div class="animal-canvas">
+                    <img src="https://images.unsplash.com/photo-1518534212903-a26569106297?w=600&q=80" alt="Eagle">
+                </div>
+                <div class="info-panel">
+                    <div class="tagline">// AERIAL_SURVEILLANCE_V2</div>
+                    <h2 class="animal-name" data-scramble>Aquila Chrysaetos</h2>
+                    <p class="description">Aéronef biologique à haute altitude. Intègre des lentilles organiques capables de zoomer instantanément sur des micro-mouvements à des distances supérieures à 3 000 mètres.</p>
+                    <button class="action-btn">INITIALISER L'ANALYSE</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ANIMAL 3 -->
+        <section>
+            <div class="neon-grid"><div class="neon-line"></div><div class="neon-line"></div><div class="neon-line"></div></div>
+            <div class="bg-text">SHARK.03</div>
+            <div class="showcase">
+                <div class="animal-canvas">
+                    <img src="https://images.unsplash.com/photo-1560275669-46c5a88d6a4c?w=600&q=80" alt="Shark">
+                </div>
+                <div class="info-panel">
+                    <div class="tagline">// AQUATIC_HUNTER_V3</div>
+                    <h2 class="animal-name" data-scramble>Carcharodon</h2>
+                    <p class="description">Silhouette hydrodynamique furtive en milieu sous-marin. Capteurs bio-électriques passifs configurés pour intercepter les signaux cardiaques à travers les courants de fond.</p>
+                    <button class="action-btn">INITIALISER L'ANALYSE</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const sections = document.querySelectorAll('section');
+        const viewport = document.getElementById('viewport');
+
+        // Effet "Scramble text" (décodage de lettres comme une IA en temps réel)
+        function scrambleText(element) {
+            const originalText = element.innerText;
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ//--0123456789";
+            let iterations = 0;
+            
+            const interval = setInterval(() => {
+                element.innerText = originalText.split("")
+                    .map((letter, index) => {
+                        if(index < iterations) {
+                            return originalText[index];
+                        }
+                        return letters[Math.floor(Math.random() * letters.length)];
+                    })
+                    .join("");
+                
+                if(iterations >= originalText.length) {
+                    clearInterval(interval);
+                }
+                iterations += 1 / 3;
+            }, 30);
+        }
+
+        // Gestion du défilement et déclenchement des effets
+        viewport.addEventListener('scroll', () => {
+            let activeSection = null;
+            
+            sections.forEach(section => {
+                const box = section.getBoundingClientRect();
+                if (box.top >= -window.innerHeight/2 && box.top <= window.innerHeight/2) {
+                    activeSection = section;
+                }
+            });
+
+            if (activeSection && !activeSection.classList.contains('active')) {
+                sections.forEach(s => s.classList.remove('active'));
+                activeSection.classList.add('active');
+                
+                // Relancer l'effet de décodage de texte sur le titre actif
+                const title = activeSection.querySelector('[data-scramble]');
+                if(title) scrambleText(title);
+            }
+        });
+
+        // Premier déclenchement au chargement
+        window.addEventListener('DOMContentLoaded', () => {
+            scrambleText(document.querySelector('section.active [data-scramble]'));
+        });
+    </script>
+</body>
+</html>
